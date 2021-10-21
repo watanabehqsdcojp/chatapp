@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}チャット{% endblock %}
+
+{% block content %}
+  <h2>チャットアプリ</h2>
+  {% if user.is_authenticated %}
+    ようこそ {{ user.get_username }} さん
+    <p><a href="{% url 'account_logout' %}">ログアウト</a></p>
+  {% else %}
+    <p><a href="{% url 'account_login' %}">ログイン</a></p>
+  {% endif %}
+
+  <h3>友達一覧</h3>
+  <ul>
+    {% for friend in friends %}
+    <li><a href="">{{ friend }}</a></li>
+    {% endfor %}
+  </ul>
+
+  <h3>トーク一覧</h3>
+  <ul>
+    {% for room in rooms %}
+    <li>
+      <a href="{% url 'chatapp:room' room.pk %}">
+        {% if room.users.all|length >= 3 %}
+        グループ
+        {% endif %}
+        {% for friend in room.users.all %}
+          {% if friend != user %}
+            {{ friend }}
+          {% endif %}
+        {% endfor %}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
